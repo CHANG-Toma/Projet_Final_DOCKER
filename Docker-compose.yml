@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  nginx1:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx1.conf:/etc/nginx/nginx.conf
+      - ./code:/var/www/html
+    ports:
+      - "8081:80"
+    depends_on:
+      - php1
+      - mysql
+
+  nginx2:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx2.conf:/etc/nginx/nginx.conf
+      - ./code:/var/www/html
+    ports:
+      - "8082:80"
+    depends_on:
+      - php2
+      - mysql
+
+  php1:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    volumes:
+      - ./code:/var/www/html
+    depends_on:
+      - mysql
+
+  php2:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    volumes:
+      - ./code:/var/www/html
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: laravel_password
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+
