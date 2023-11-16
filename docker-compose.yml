@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+  #Premier service NGINX
   nginx1:
     image: nginx:latest
     volumes:
@@ -12,6 +13,7 @@ services:
       - php1
       - mysql
 
+  #Deuxième service NGINX
   nginx2:
     image: nginx:latest
     volumes:
@@ -23,24 +25,27 @@ services:
       - php2
       - mysql
 
+#Mise en place du premier service PHP pour nginx1
   php1:
     build:
       context: .
-      dockerfile: Dockerfile.php
+      dockerfile: ./Dockerfile
     volumes:
       - ./code:/var/www/html
     depends_on:
       - mysql
 
+#Mise en place du deuxième service PHP pour nginx2
   php2:
     build:
       context: .
-      dockerfile: Dockerfile.php
+      dockerfile: ./Dockerfile
     volumes:
       - ./code:/var/www/html
     depends_on:
       - mysql
 
+#Mise en place d'un seul service MySQL pour que les deux nginx l'utilise
   mysql:
     image: mysql:latest
     environment:
@@ -51,6 +56,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
+#Espace de stockage des données de la base de données
 volumes:
   db_data:
 
