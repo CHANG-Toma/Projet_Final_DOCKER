@@ -35,3 +35,4 @@ RUN composer install --optimize-autoloader --no-scripts \
     && php artisan migrate:fresh --seed
 
 CMD ["php-fpm"]
+
