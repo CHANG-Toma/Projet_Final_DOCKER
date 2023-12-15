@@ -29,6 +29,7 @@ RUN composer install --optimize-autoloader --no-scripts
 # Copier le reste des fichiers source
 COPY . /var/www/html
 
+
 # Exécution des commandes Laravel
 RUN composer install --optimize-autoloader --no-scripts \
     && php artisan key:generate \
