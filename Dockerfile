@@ -30,6 +30,4 @@ RUN composer install --optimize-autoloader --no-scripts --no-cache
 COPY . /var/www/html
 
 # Exécution des commandes Laravel
-RUN php artisan key:generate
-
-CMD ["php", "artisan", "serve", "--host=127.0.0.1", "--port=8000"]
+CMD ["php", "artisan", "migrate:fresh", "--seed", "--host=0.0.0.0", "--port=9000"]

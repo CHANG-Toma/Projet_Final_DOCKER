@@ -1,67 +1,61 @@
 version: '3'
 
 services:
-  #Premier service NGINX
-  nginx1:
-    image: nginx:latest
-    volumes:
-      - ./nginx/nginx1.conf:/etc/nginx/nginx.conf
-      - ./code:/var/www/html
-    ports:
-      - "8081:80"
-    depends_on:
-      - php1
-      - db
+    nginx1:
+        image: nginx:latest
+        volumes:
+            - ./nginx/nginx1.conf:/etc/nginx/nginx1.conf
+            - ./code:/var/www/html
+        ports:
+            - "8081:80"
+        depends_on:
+            - php1
+            - db
 
-  #Deuxième service NGINX
-  nginx2:
-    image: nginx:latest
-    volumes:
-      - ./nginx/nginx2.conf:/etc/nginx/nginx.conf
-      - ./code:/var/www/html
-    ports:
-      - "8082:80"
-    depends_on:
-      - php2
-      - db
+    nginx2:
+        image: nginx:latest
+        volumes:
+            - ./nginx/nginx2.conf:/etc/nginx/nginx2.conf
+            - ./code:/var/www/html
+        ports:
+            - "8082:80"
+        depends_on:
+            - php2
+            - db
 
-#Mise en place du premier service PHP pour nginx1
-  php1:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    volumes:
-      - ./code:/var/www/html
-    depends_on:
-      - db
+    php1:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        volumes:
+            - ./code:/var/www/html
+        depends_on:
+            - db
 
-#Mise en place du deuxième service PHP pour nginx2
-  php2:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    volumes:
-      - ./code:/var/www/html
-    depends_on:
-      - db
+    php2:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        volumes:
+            - ./code:/var/www/html
+        depends_on:
+            - db
 
-#Mise en place d'un seul service MySQL pour que les deux nginx l'utilisent
-  db:
-    image: mysql:latest
-    container_name: db
-    restart: unless-stopped
-    tty: true
-    ports:
-        - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: dockerprojetfinal
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-    volumes:
-      - db_data:/var/lib/mysql
+    db:
+        image: mysql:latest
+        command: --default-authentication-plugin=mysql_native_password
+        container_name: db
+        restart: always
+        tty: true
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: "root"
+            MYSQL_DATABASE: "Docker_projet_final"
+            MYSQL_USER: "root"
+            MYSQL_PASSWORD: "root"
+        volumes:
+            - db_data:/var/lib/mysql
 
-#Espace de stockage des données de la base de données
 volumes:
-  db_data:
-
+    db_data:
