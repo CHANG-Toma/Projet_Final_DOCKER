@@ -11,7 +11,7 @@ services:
       - "8081:80"
     depends_on:
       - php1
-      - db
+      - mysql
 
   #Deuxième service NGINX
   nginx2:
@@ -23,7 +23,7 @@ services:
       - "8082:80"
     depends_on:
       - php2
-      - db
+      - mysql
 
 #Mise en place du premier service PHP pour nginx1
   php1:
@@ -33,7 +33,7 @@ services:
     volumes:
       - ./code:/var/www/html
     depends_on:
-      - db
+      - mysql
 
 #Mise en place du deuxième service PHP pour nginx2
   php2:
@@ -43,21 +43,16 @@ services:
     volumes:
       - ./code:/var/www/html
     depends_on:
-      - db
+      - mysql
 
-#Mise en place d'un seul service MySQL pour que les deux nginx l'utilisent
-  db:
+#Mise en place d'un seul service MySQL pour que les deux nginx l'utilise
+  mysql:
     image: mysql:latest
-    container_name: db
-    restart: unless-stopped
-    tty: true
-    ports:
-        - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: dockerprojetfinal
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: laravel_password
     volumes:
       - db_data:/var/lib/mysql
 

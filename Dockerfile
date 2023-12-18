@@ -1,4 +1,4 @@
-# Utilisation de la dernière version de PHP
+# Utilisation de la dernière version de php
 FROM php:latest
 
 # Définition du répertoire de travail
@@ -24,12 +24,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 COPY composer.json composer.lock /var/www/html/
 
 # Installation des dépendances PHP
-RUN composer install --optimize-autoloader --no-scripts --no-cache
+RUN composer install --optimize-autoloader --no-scripts
 
 # Copier le reste des fichiers source
 COPY . /var/www/html
 
 # Exécution des commandes Laravel
-RUN php artisan key:generate
+RUN composer install --optimize-autoloader --no-scripts \
+    && php artisan key:generate \
+    && php artisan migrate:fresh --seed
 
-CMD ["php", "artisan", "serve", "--host=127.0.0.1", "--port=8000"]
+CMD ["php-fpm"]
+
