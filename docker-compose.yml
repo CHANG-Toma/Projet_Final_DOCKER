@@ -3,23 +3,19 @@ services:
         image: nginx:latest
         volumes:
             - './nginx/nginx1.conf:/etc/nginx/nginx1.conf'
-            - '..:/var/www/html'
         ports:
             - "8081:80"
         depends_on:
             - php1
-            - db
 
     nginx2:
         image: nginx:latest
         volumes:
             - './nginx/nginx2.conf:/etc/nginx/nginx2.conf'
-            - '..:/var/www/html'
         ports:
             - "8082:80"
         depends_on:
             - php2
-            - db
 
     php1:
         build:
@@ -48,6 +44,10 @@ services:
             MYSQL_PASSWORD: root
         volumes:
             - db_data:/var/lib/mysql
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+            timeout: 20s
+            retries: 10
 
 volumes:
     db_data:
