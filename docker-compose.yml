@@ -3,7 +3,7 @@ services:
         image: nginx:latest
         volumes:
             - './nginx/nginx1.conf:/etc/nginx/nginx1.conf'
-            - './code:/var/www/html'
+            - '..:/var/www/html'
         ports:
             - "8081:80"
         depends_on:
@@ -14,7 +14,7 @@ services:
         image: nginx:latest
         volumes:
             - './nginx/nginx2.conf:/etc/nginx/nginx2.conf'
-            - './code:/var/www/html'
+            - '..:/var/www/html'
         ports:
             - "8082:80"
         depends_on:
@@ -23,19 +23,19 @@ services:
 
     php1:
         build:
-            context: './php1'
-            dockerfile: './Dockerfile'
+            context: .
+            dockerfile: php1/Dockerfile
         volumes:
-            - './code:/var/www/html'
+            - ./php1:/var/www/html
         depends_on:
             - db
 
     php2:
         build:
-            context: './php2'
-            dockerfile: './Dockerfile'
+            context: .
+            dockerfile: php2/Dockerfile
         volumes:
-            - './code:/var/www/html'
+            - ./php2:/var/www/html
         depends_on:
             - db
 

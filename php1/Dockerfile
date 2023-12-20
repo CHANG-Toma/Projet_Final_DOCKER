@@ -1,20 +1,31 @@
-# Dockerfile pour php2
+# Utilisez une image PHP de base
 FROM php:latest
 
+# Installez les dépendances nécessaires pour Laravel
+RUN apt-get update && apt-get install -y \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip
+
+# Installez Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Définissez le répertoire de travail
 WORKDIR /var/www/html
 
-RUN apt-get update && \
-    apt-get install -y \
-        zip \
-        unzip \
-        curl \
-        libzip-dev \
-        libonig-dev \
-        libexif-dev \
-        libpcap-dev
+# Copiez le fichier composer.json séparément pour permettre une mise en cache efficace de l'installation des dépendances
+COPY composer.json composer.lock /var/www/html/
 
-RUN docker-php-ext-install pdo_mysql zip mbstring exif pcntl bcmath opcache
+# Copiez le reste des fichiers de votre application
+COPY . /var/www/html
 
-COPY code /var/www/html/
+# Installez les dépendances de Composer
+RUN composer install --optimize-autoloader --no-scripts --no-cache
 
-CMD ["php", "artisan", "migrate:fresh", "--seed", "--host=0.0.0.0", "--port=9000"]
+# Exécution des commandes Laravel
+RUN php artisan key:generate
+
+CMD ["php", "artisan", "serve", "--host=127.0.0.1", "--port=8000"]
