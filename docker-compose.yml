@@ -19,21 +19,17 @@ services:
 
     php1:
         build:
-            context: .
+            context: /
             dockerfile: php1/Dockerfile
         volumes:
             - ./php1:/var/www/html
-        depends_on:
-            - db
 
     php2:
         build:
-            context: .
+            context: /
             dockerfile: php2/Dockerfile
         volumes:
             - ./php2:/var/www/html
-        depends_on:
-            - db
 
     db:
         image: mysql
@@ -44,10 +40,6 @@ services:
             MYSQL_PASSWORD: root
         volumes:
             - db_data:/var/lib/mysql
-        healthcheck:
-            test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-            timeout: 20s
-            retries: 10
 
 volumes:
     db_data:
