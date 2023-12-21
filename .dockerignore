@@ -1,24 +1,27 @@
-# Laravel specific
-vendor/
-node_modules/
 
-# Version control
+# Control de version
 .git
 .gitignore
-
-# Laravel environment file
-.env
 
 # Laravel IDE helper
 .phpstorm.meta.php
 
-# Docker specific
+# Docker
 .dockerignore
 Dockerfile
 
-# Other unnecessary files and directories
+# autres
 composer.phar
 phpunit.xml
 
 php1
 php2
+
+nginx
+
+PROJET FINAL SUJET.pdf
+Projet_Final_DOCKER.iml
+
+README.md
+
+
