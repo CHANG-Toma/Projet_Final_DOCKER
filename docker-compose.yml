@@ -7,6 +7,8 @@ services:
             - "8081:80"
         depends_on:
             - php1
+        networks:
+            - ProjetFinal_network
 
     nginx2:
         image: nginx:latest
@@ -16,20 +18,26 @@ services:
             - "8082:80"
         depends_on:
             - php2
+        networks:
+            - ProjetFinal_network
 
     php1:
         build:
-            context: /
+            context: ./
             dockerfile: php1/Dockerfile
         volumes:
-            - ./php1:/var/www/html
+            - .:/var/www/html
+        networks:
+            - ProjetFinal_network
 
     php2:
         build:
-            context: /
+            context: ./
             dockerfile: php2/Dockerfile
         volumes:
-            - ./php2:/var/www/html
+            - .:/var/www/html
+        networks:
+            - ProjetFinal_network
 
     db:
         image: mysql
@@ -40,6 +48,11 @@ services:
             MYSQL_PASSWORD: root
         volumes:
             - db_data:/var/lib/mysql
+        networks:
+            - ProjetFinal_network
 
 volumes:
     db_data:
+
+networks:
+    ProjetFinal_network:
