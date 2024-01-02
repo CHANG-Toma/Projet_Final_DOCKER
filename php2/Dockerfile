@@ -9,8 +9,9 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nodejs \
-    git \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+    npm \
+    git && \
+    docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
 # Installe Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -28,15 +29,18 @@ RUN composer install --optimize-autoloader --no-scripts --no-dev --no-cache
 COPY . /var/www/html
 
 # Copie le fichier .env.example vers .env si .env n'existe pas
-RUN if [ ! -f .env ]; then cp .env.example .env; fi
+RUN if [ ! -f .env ]; then cp ./.env .env; fi
 
 # Générer la clé d'application
 RUN php artisan key:generate
 
+# Installer les dépendances Node et construire les assets
+RUN npm install && npm run build
+
 # Donner les permissions nécessaires
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 777 /var/www/html \
-    && chmod -R 777 /var/www/html/storage
+    && chmod -R 755 /var/www/html \
+    && chmod -R 755 /var/www/html/storage
 
 # Expose le port pour FPM
 EXPOSE 9000
