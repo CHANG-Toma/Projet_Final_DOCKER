@@ -35,7 +35,7 @@ RUN php artisan key:generate
 
 # Donner les permissions nécessaires
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
+    && chmod -R 777 /var/www/html \
     && chmod -R 777 /var/www/html/storage
 
 # Expose le port pour FPM
