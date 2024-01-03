@@ -1,4 +1,28 @@
 services:
+    php1:
+        build:
+            context: ./
+            dockerfile: php1/Dockerfile
+        volumes:
+            - '.:/var/www/html'
+            - './php1/.env:/var/www/html/.env'
+        depends_on:
+            - db
+        networks:
+            - ProjetFinal_network
+
+    php2:
+        build:
+            context: ./
+            dockerfile: php2/Dockerfile
+        volumes:
+            - '.:/var/www/html'
+            - './php2/.env:/var/www/html/.env'
+        depends_on:
+            - db
+        networks:
+            - ProjetFinal_network
+
     nginx1:
         image: nginx:latest
         volumes:
@@ -23,29 +47,18 @@ services:
         networks:
             - ProjetFinal_network
 
-    php1:
-        build:
-            context: ./
-            dockerfile: php1/Dockerfile
+    reverse-proxy:
+        image: nginx:latest
         volumes:
-            - '.:/var/www/html'
-            - './php1/.env:/var/www/html/.env'
+            - ./nginx/reverse-proxy.conf:/etc/nginx/conf.d/default.conf
+        ports:
+            - "80:80"
         depends_on:
-            - db
+            - nginx1
+            - nginx2
         networks:
             - ProjetFinal_network
 
-    php2:
-        build:
-            context: ./
-            dockerfile: php2/Dockerfile
-        volumes:
-            - '.:/var/www/html'
-            - './php2/.env:/var/www/html/.env'
-        depends_on:
-            - db
-        networks:
-            - ProjetFinal_network
 
     db:
         image: mysql
