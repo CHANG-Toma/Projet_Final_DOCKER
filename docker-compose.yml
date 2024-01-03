@@ -29,6 +29,9 @@ services:
             dockerfile: php1/Dockerfile
         volumes:
             - '.:/var/www/html'
+            - './php1/.env:/var/www/html/.env'
+        depends_on:
+            - db
         networks:
             - ProjetFinal_network
 
@@ -38,6 +41,9 @@ services:
             dockerfile: php2/Dockerfile
         volumes:
             - '.:/var/www/html'
+            - './php2/.env:/var/www/html/.env'
+        depends_on:
+            - db
         networks:
             - ProjetFinal_network
 
@@ -47,7 +53,8 @@ services:
         environment:
             MYSQL_DATABASE: Projetfinaldocker
             MYSQL_ROOT_PASSWORD: password
-            MYSQL_PASSWORD: root
+            MYSQL_USER: root
+            MYSQL_PASSWORD: password
         volumes:
             - db_data:/var/lib/mysql
         networks:

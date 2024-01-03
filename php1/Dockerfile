@@ -19,23 +19,17 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Défini le répertoire de travail
 WORKDIR /var/www/html
 
-# Copie les fichiers composer
-COPY composer.json composer.lock /var/www/html/
+# Copie les fichiers composer et le script d'entrée depuis le répertoire parent
+COPY entrypoint.sh composer.json composer.lock /var/www/html/
+
+# Rend le script d'entrée exécutable
+RUN chmod +x /var/www/html/entrypoint.sh
 
 # Installe les dépendances Composer
 RUN composer install --optimize-autoloader --no-scripts --no-dev --no-cache
 
 # Copie le reste des fichiers de l'application
 COPY . /var/www/html
-
-# Copie le fichier .env.example vers .env si .env n'existe pas
-RUN if [ ! -f .env ]; then cp ./.env .env; fi
-
-# Générer la clé d'application
-RUN php artisan key:generate
-
-# Installer les dépendances Node et construire les assets
-RUN npm install && npm run build
 
 # Donner les permissions nécessaires
 RUN chown -R www-data:www-data /var/www/html \
@@ -45,5 +39,5 @@ RUN chown -R www-data:www-data /var/www/html \
 # Expose le port pour FPM
 EXPOSE 9000
 
-# Point d'entrée pour démarrer les services
-CMD ["php-fpm"]
+# Utilise le script d'entrée comme point d'entrée
+ENTRYPOINT ["/var/www/html/entrypoint.sh"]
