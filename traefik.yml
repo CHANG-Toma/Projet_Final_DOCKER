@@ -1,0 +1,13 @@
+api:
+  dashboard: true  # dashboard pour la visualisation + gestion
+
+log:
+  level: DEBUG  # pour le débogage
+
+entryPoints:
+  web:
+    address: ":80"  # Le point d'entrée nommé 'web', écoutant sur le port 80
+
+providers:
+  docker:
+    defaultRule: "Host(`{{ trimPrefix `/` .Name }}.docker.localhost`)"  # Génération des noms de domaine à partir des noms des services Docker
