@@ -6,7 +6,7 @@ log:
 
 entryPoints:
   web:
-    address: ":80"  # Le point d'entrée nommé 'web', écoutant sur le port 80
+    address: ":80"  # Le point d'entrée nommé 'web', qui écoute le port 80
 
 providers:
   docker:
