@@ -85,8 +85,6 @@ services:
         environment:
             MYSQL_DATABASE: Projetfinaldocker
             MYSQL_ROOT_PASSWORD: password
-            MYSQL_USER: root
-            MYSQL_PASSWORD: password
         volumes:
             - db_data:/var/lib/mysql
         networks:
