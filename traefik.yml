@@ -10,4 +10,5 @@ entryPoints:
 
 providers:
   docker:
+    watch : true #surveiller les conteneurs
     defaultRule: "Host(`{{ trimPrefix `/` .Name }}.docker.localhost`)"  # Génération des noms de domaine à partir des noms des services Docker

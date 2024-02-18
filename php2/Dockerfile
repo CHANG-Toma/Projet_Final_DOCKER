@@ -19,24 +19,17 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Défini le répertoire de travail
 WORKDIR /var/www/html
 
-# Copie les fichiers de l'application
-COPY . /var/www/html
+# Copie les fichiers de l'application Laravel
+COPY . /var/www/html/
 
 # Copie les fichiers composer.json et composer.lock dans le répertoire de travail
-COPY composer.json composer.lock ./
-
-# Installe les dépendances Composer sans exécuter de scripts
-RUN composer install
-
-# Rend le script d'entrée exécutable et ajuste les permissions
-RUN chmod +x entrypoint.sh
+COPY ../Laravel/composer.json ../Laravel/composer.lock /var/www/html/
 
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+    && chmod -R 755 /var/www/html
 
 # Expose le port pour FPM
 EXPOSE 9000
 
 # Utilise le script d'entrée comme point d'entrée
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/var/www/html/entrypoint.sh"]
