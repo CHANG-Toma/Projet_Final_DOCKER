@@ -8,13 +8,8 @@ services:
             - "--providers.docker=true"
             - "--providers.docker.exposedByDefault=false"
             - "--entrypoints.web.address=:80"
-            - "--log.level=DEBUG"
         ports:
             - "80:80"
-            - "8083:8080" # Port pour l'interface web de Traefik
-        labels:
-            - "traefik.http.middlewares.strip-nginx1.stripprefix.prefixes=/nginx1"
-            - "traefik.http.middlewares.strip-nginx2.stripprefix.prefixes=/nginx2"
         volumes:
             - "/var/run/docker.sock:/var/run/docker.sock"
             - "./traefik.yml:/etc/traefik/traefik.yml" # Configuration Traefik
@@ -22,9 +17,7 @@ services:
             - ProjetFinal_network
 
     php1:
-        build:
-            context: ./
-            dockerfile: php1/Dockerfile
+        build: ./php1
         volumes:
             - './Laravel:/var/www/html'
             - './php1/.env:/var/www/html/.env'
@@ -33,17 +26,6 @@ services:
         networks:
             - ProjetFinal_network
 
-    php2:
-        build:
-            context: ./
-            dockerfile: php2/Dockerfile
-        volumes:
-            - './Laravel:/var/www/html'
-            - './php2/.env:/var/www/html/.env'
-        depends_on:
-            - db
-        networks:
-            - ProjetFinal_network
 
     nginx1:
         image: nginx:latest
@@ -74,8 +56,6 @@ services:
             - "traefik.http.routers.nginx2.rule=PathPrefix(`/nginx2`)"
             - "traefik.http.routers.nginx2.middlewares=strip-nginx2@docker"
             - "traefik.http.services.nginx2.loadbalancer.server.port=80"
-        depends_on:
-            - php2
         networks:
             - ProjetFinal_network
 
