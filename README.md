@@ -1,25 +1,30 @@
-## TP Final - Projet Docker Compose
+## TP Final - Projet Docker
+
+## Membres du groupe:
+- CHANG Toma
+- RIMANI Ilies
+- GARCHI Adam
 
 ## Objectif :
 Créer une configuration Docker Compose pour lancer deux services Nginx, deux services PHP et une base de données MySQL. Le projet consiste à exécuter le même site deux fois avec une base de données partagée.
 
 ## Note Docker
-Docker compose up -d
+- Docker compose up -d
+
+- Toutes les dépandances pour l'application Laravel sont automatisées via un entrypoint exécuté via le dockerfile des services PHP 
+(voir entrypoint.sh pour le script)
 
 ## Les conteneurs Nginx
 
-Serveur 1 : 
+Serveur 1 : (Nginx1)
 
-- via Traefik : localhost/nginx1 
-- via le port : localhost:8081
+- via Traefik : localhost:8081
 
-Serveur 2 : 
-- via Traefik : localhost/nginx2
-- via le port : localhost:8082
+Serveur 2 : (Nginx2) 
+
+- via Traefik : localhost:8082
 
 ## Les utilisateurs créés
-
-Ne pas oublier d'exécuter : npm run dev
 
 - Mail : nginx1@gmail.com | password : 12345678
 - Mail : nginx2@gmail.com | password : 87654321
