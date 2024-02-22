@@ -24,6 +24,8 @@
 
 
     <p>{{ env('SERVER_ID', 'Serveur par défaut') }}</p>
+    <title>{{$_SERVER['HTTP_HOST'] == 'localhost:8080' ? 'Serveur 1' : 'Serveur 2'}}</title>
+
 
 
     <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
