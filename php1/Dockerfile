@@ -1,39 +1,42 @@
-FROM php:8.2-fpm
+FROM php:8.1-fpm
 
-WORKDIR /var/www/html
-
+# Installe les dépendances requises pour Laravel et les extensions PHP pour MySQL
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql zip
+    nodejs \
+    npm \
+    git && \
+    docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
+# Installe Composer globalement
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN apt-get update \
-    && apt-get install -y wget \
-    && wget -O - https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar xzf - -C /usr/local/bin \
-    && apt-get autoremove -yqq --purge wget && rm -rf /var/lib/apt/lists/*
+# Défini le répertoire de travail
+WORKDIR /var/www/html
 
-RUN apt-get update && apt-get install -y inetutils-ping telnet
+# Copie les fichiers de l'application
+COPY . /var/www/html
 
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
-    apt-get install -y nodejs
+# Copie les fichiers composer.json et composer.lock dans le répertoire de travail
+COPY composer.json composer.lock ./
 
-RUN apt-get update && apt-get install npm -y
+# Installe les dépendances Composer sans exécuter de scripts
+RUN composer install
 
-COPY ./docker_project_files .
-
-RUN composer install --optimize-autoloader --no-dev
-
-RUN composer dump-autoload --optimize
+# Rend le script d'entrée exécutable et ajuste les permissions
+RUN chmod +x entrypoint.sh
 
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage
+    && chmod -R 755 /var/www/html \
+    && chmod -R 755 /var/www/html/storage
 
-RUN npm install
-RUN npm run build
-RUN php artisan key:generate
+# Expose le port pour FPM
 EXPOSE 9000
 
-CMD dockerize -wait tcp://db:3306 -timeout 1m php artisan migrate:fresh --seed && php-fpm
+# Utilise le script d'entrée comme point d'entrée
+ENTRYPOINT ["./entrypoint.sh"]

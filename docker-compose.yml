@@ -2,42 +2,56 @@ version: '3'
 
 services:
     traefik:
-        image: traefik:latest
+        image: traefik:v2.10
         command:
             - "--api.insecure=true"
             - "--providers.docker=true"
             - "--providers.docker.exposedByDefault=false"
             - "--entrypoints.web.address=:80"
+            - "--entrypoints.web8081.address=:8081"
+            - "--entrypoints.web8082.address=:8082"
         ports:
             - "80:80"
+            - "8081:8081"
+            - "8082:8082"
         volumes:
             - "/var/run/docker.sock:/var/run/docker.sock"
-            - "./traefik.yml:/etc/traefik/traefik.yml" # Configuration Traefik
         networks:
             - ProjetFinal_network
 
     php1:
-        build: ./php1
+        build:
+            context: ./
+            dockerfile: php1/Dockerfile
         volumes:
-            - './Laravel:/var/www/html'
+            - '.:/var/www/html'
             - './php1/.env:/var/www/html/.env'
         depends_on:
             - db
         networks:
             - ProjetFinal_network
 
+    php2:
+        build:
+            context: ./
+            dockerfile: php1/Dockerfile
+        volumes:
+            - '.:/var/www/html'
+            - './php2/.env:/var/www/html/.env'
+        depends_on:
+            - db
+        networks:
+            - ProjetFinal_network
 
     nginx1:
         image: nginx:latest
         volumes:
             - './nginx/nginx1.conf:/etc/nginx/conf.d/default.conf'
-            - './Laravel:/var/www/html'
-        ports:
-            -   "8081:80"
+            - '.:/var/www/html'
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.nginx1.rule=PathPrefix(`/nginx1`)"
-            - "traefik.http.routers.nginx1.middlewares=strip-nginx1@docker"
+            - "traefik.http.routers.nginx1.entrypoints=web8081"
+            - "traefik.http.routers.nginx1.rule=Host(`localhost`)"
             - "traefik.http.services.nginx1.loadbalancer.server.port=80"
         depends_on:
             - php1
@@ -48,14 +62,14 @@ services:
         image: nginx:latest
         volumes:
             - './nginx/nginx2.conf:/etc/nginx/conf.d/default.conf'
-            - './Laravel:/var/www/html'
-        ports:
-            - "8082:80"
+            - '.:/var/www/html'
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.nginx2.rule=PathPrefix(`/nginx2`)"
-            - "traefik.http.routers.nginx2.middlewares=strip-nginx2@docker"
+            - "traefik.http.routers.nginx2.entrypoints=web8082"
+            - "traefik.http.routers.nginx2.rule=Host(`localhost`)"
             - "traefik.http.services.nginx2.loadbalancer.server.port=80"
+        depends_on:
+            - php2
         networks:
             - ProjetFinal_network
 
