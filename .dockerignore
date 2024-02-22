@@ -1,0 +1,27 @@
+
+# Control de version
+.git
+.gitignore
+
+# Laravel IDE helper
+.phpstorm.meta.php
+
+# Docker
+.dockerignore
+Dockerfile
+
+# autres
+composer.phar
+phpunit.xml
+
+php1
+php2
+
+nginx
+
+PROJET FINAL SUJET.pdf
+Projet_Final_DOCKER.iml
+
+README.md
+
+
