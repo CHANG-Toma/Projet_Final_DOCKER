@@ -11,8 +11,7 @@ Créer une configuration Docker Compose pour lancer deux services Nginx, deux se
 ## Note Docker
 - Docker compose up -d
 
-- Toutes les dépandances pour l'application Laravel sont automatisées via un entrypoint exécuté via le dockerfile des services PHP 
-(voir entrypoint.sh pour le script)
+- Toutes les dépendances de l'application Laravel sont automatisées via un point d'entrée exécuté via le Dockerfile des services PHP (voir entrypoint.sh pour le script).
 
 ## Les conteneurs Nginx
 
